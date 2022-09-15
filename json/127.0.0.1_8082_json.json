@@ -1,0 +1,124 @@
+{
+  "Cars": [
+    {
+      "Model": "ks_mclaren_650_gt3",
+      "Skin": "racing_57",
+      "DriverName": "",
+      "DriverTeam": "",
+      "DriverNation": "",
+      "IsConnected": false,
+      "IsRequestedGUID": true,
+      "IsEntryList": true
+    },
+    {
+      "Model": "ks_mclaren_650_gt3",
+      "Skin": "00_racing_59",
+      "DriverName": "",
+      "DriverTeam": "",
+      "DriverNation": "",
+      "IsConnected": false,
+      "IsRequestedGUID": true,
+      "IsEntryList": true
+    },
+    {
+      "Model": "ks_mercedes_amg_gt3",
+      "Skin": "0_0fficial",
+      "DriverName": "",
+      "DriverTeam": "",
+      "DriverNation": "",
+      "IsConnected": false,
+      "IsRequestedGUID": true,
+      "IsEntryList": true
+    },
+    {
+      "Model": "ks_mercedes_amg_gt3",
+      "Skin": "racing_71",
+      "DriverName": "",
+      "DriverTeam": "",
+      "DriverNation": "",
+      "IsConnected": false,
+      "IsRequestedGUID": true,
+      "IsEntryList": true
+    },
+    {
+      "Model": "ferrari_458_gt2",
+      "Skin": "af_corse_51",
+      "DriverName": "",
+      "DriverTeam": "",
+      "DriverNation": "",
+      "IsConnected": false,
+      "IsRequestedGUID": true,
+      "IsEntryList": true
+    },
+    {
+      "Model": "ferrari_458_gt2",
+      "Skin": "kessel1_52",
+      "DriverName": "",
+      "DriverTeam": "",
+      "DriverNation": "",
+      "IsConnected": false,
+      "IsRequestedGUID": true,
+      "IsEntryList": true
+    },
+    {
+      "Model": "bmw_m3_gt2",
+      "Skin": "0_BMW_Motorsport",
+      "DriverName": "",
+      "DriverTeam": "",
+      "DriverNation": "",
+      "IsConnected": false,
+      "IsRequestedGUID": true,
+      "IsEntryList": true
+    },
+    {
+      "Model": "bmw_z4_gt3",
+      "Skin": "bmw_motorsport_2012",
+      "DriverName": "",
+      "DriverTeam": "",
+      "DriverNation": "",
+      "IsConnected": false,
+      "IsRequestedGUID": true,
+      "IsEntryList": true
+    },
+    {
+      "Model": "ks_audi_r8_lms_2016",
+      "Skin": "05_racing_29",
+      "DriverName": "",
+      "DriverTeam": "",
+      "DriverNation": "",
+      "IsConnected": false,
+      "IsRequestedGUID": true,
+      "IsEntryList": true
+    },
+    {
+      "Model": "ks_audi_r8_lms_2016",
+      "Skin": "08_racing_33",
+      "DriverName": "",
+      "DriverTeam": "",
+      "DriverNation": "",
+      "IsConnected": false,
+      "IsRequestedGUID": true,
+      "IsEntryList": true
+    },
+    {
+      "Model": "mercedes_sls_gt3",
+      "Skin": "0_AMG",
+      "DriverName": "",
+      "DriverTeam": "",
+      "DriverNation": "",
+      "IsConnected": false,
+      "IsRequestedGUID": true,
+      "IsEntryList": true
+    },
+    {
+      "Model": "ks_lamborghini_huracan_st",
+      "Skin": "Racing_82",
+      "DriverName": "",
+      "DriverTeam": "",
+      "DriverNation": "",
+      "IsConnected": false,
+      "IsRequestedGUID": true,
+      "IsEntryList": true
+    }
+  ]
+}

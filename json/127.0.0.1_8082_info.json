@@ -1,0 +1,44 @@
+{
+  "ip": "",
+  "port": 9602,
+  "cport": 8082,
+  "name": "AN221Server #2 Suzuka GT2/3 (KMR) - Download links: ac1.starfree.jp/links/",
+  "clients": 0,
+  "maxclients": 12,
+  "track": "rt_suzuka-suzukagp",
+  "cars": [
+    "ks_audi_r8_lms_2016",
+    "bmw_m3_gt2",
+    "bmw_z4_gt3",
+    "ferrari_458_gt2",
+    "ks_lamborghini_huracan_st",
+    "ks_mclaren_650_gt3",
+    "mercedes_sls_gt3",
+    "ks_mercedes_amg_gt3"
+  ],
+  "timeofday": -32,
+  "session": 0,
+  "sessiontypes": [
+    2,
+    3
+  ],
+  "durations": [
+    15,
+    4
+  ],
+  "timeleft": 379,
+  "country": [
+    "na",
+    "na"
+  ],
+  "pass": false,
+  "timestamp": 0,
+  "json": null,
+  "l": false,
+  "pickup": true,
+  "tport": 9602,
+  "timed": false,
+  "extra": false,
+  "pit": false,
+  "inverted": 0
+}
