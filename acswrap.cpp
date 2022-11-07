@@ -36,6 +36,7 @@
 
 #include <boost/format.hpp>
 #include <boost/process.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 
 // https://github.com/yhirose/cpp-httplib
@@ -68,6 +69,25 @@ string get_mod_cfg_name(string path)
         name = path;
     }
     return dir + "_" + name;
+}
+
+void load_textfile(string path, string &text)
+{
+    std::ifstream ifs(path);
+    std::stringstream buf;
+    buf << ifs.rdbuf();
+    text = buf.str();
+}
+
+std::time_t get_write_time(string path)
+{
+    std::time_t write_time;
+    try {
+        write_time = boost::filesystem::last_write_time(path);
+    } catch (...) {
+        write_time = 0;
+    }
+    return write_time;
 }
 
 int main(int argc, char **argv)
@@ -120,12 +140,8 @@ int main(int argc, char **argv)
     ac_desc         = vm["desc"].as<string>();
     ac_nice         = vm["nice"].as<int>();
 
-    {
-        std::ifstream ifs(ac_desc);
-        std::stringstream buf;
-        buf << ifs.rdbuf();
-        desc = buf.str();
-    }
+    load_textfile(ac_desc, desc);
+    std::time_t desc_write_time = get_write_time(ac_desc);
 
     //cout << get_mod_cfg_name(ac_server_cfg) << "\n";
     ac_mod_server_cfg = get_mod_cfg_name(ac_server_cfg);
@@ -278,6 +294,12 @@ int main(int argc, char **argv)
 
         detail["players"] = players;
 
+        std::time_t write_time = get_write_time(ac_desc);
+        if (write_time > desc_write_time) {
+            load_textfile(ac_desc, desc);
+            std::cout << (boost::format("\"%s\" reloaded") % ac_desc).str() << "\n";
+            desc_write_time = write_time;
+        }
         detail["description"] = desc;
 
         detail["ambientTemperature"] = temp_ambient;
