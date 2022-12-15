@@ -29,6 +29,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <chrono>
 #include <thread>
 #include <mutex>
 #include <regex>
@@ -107,6 +108,8 @@ int main(int argc, char **argv)
     string ac_mod_server_cfg;
     string desc;
 
+    int acs_pid = 0;
+
     namespace po = boost::program_options;
     po::options_description opt;
     opt.add_options()
@@ -146,9 +149,6 @@ int main(int argc, char **argv)
     //cout << get_mod_cfg_name(ac_server_cfg) << "\n";
     ac_mod_server_cfg = get_mod_cfg_name(ac_server_cfg);
 
-    std::ifstream ifs(ac_server_cfg);
-    std::ofstream ofs(ac_mod_server_cfg);
-
     string section;
 
     int ac_http_port          = 8081;
@@ -180,59 +180,76 @@ int main(int argc, char **argv)
         }
     };
 
-    while (getline(ifs, line)) {
-        line = std::regex_replace(line, std::regex("\\r"), "");
-        if (std::regex_match(line, match, std::regex("^\\[(.+)\\]\\s*"))) {
-            section = match[1].str();
-        }
-        if (section == "SERVER") {
-            if (std::regex_match(line, match, std::regex("^NAME=(.*)"))) {
-                ac_server_name = match[1].str();
-                //string ac_server_name = match[1].str() + " ℹ" + to_string(ac_detail_port);
-                ofs << "NAME=" << ac_server_name << " ℹ" << to_string(ac_detail_port) << "\r\n";
-                continue;
-            }
-            
-            get_int_value("^HTTP_PORT=\\s*(\\d+)\\s*", ac_http_port);
-            get_int_value("^TYRE_WEAR_RATE=\\s*(\\d+)\\s*", tyre_wear);
-            get_int_value("^CLIENT_SEND_INTERVAL_HZ=\\s*(\\d+)\\s*", frequency);
+    auto load_config = [&]() {
+        std::ifstream ifs(ac_server_cfg);
+        std::ofstream ofs(ac_mod_server_cfg);
 
-            get_int_value("^ABS_ALLOWED=\\s*(\\d+)\\s*",           abs_state);
-            get_int_value("^ALLOWED_TYRES_OUT=\\s*(\\d+)\\s*",     allowed_tyres_out);
-            get_int_value("^AUTOCLUTCH_ALLOWED=\\s*(\\d+)\\s*",    autoclutch_allowed);
-            get_int_value("^DAMAGE_MULTIPLIER=\\s*(\\d+)\\s*",     damage_multiplier);
-            get_int_value("^FORCE_VIRTUAL_MIRROR=\\s*(\\d+)\\s*",  force_virtual_mirror);
-            get_int_value("^FUEL_RATE=\\s*(\\d+)\\s*",             fuel_rate);
-            get_int_value("^STABILITY_ALLOWED=\\s*(\\d+)\\s*",     stability_allowed);
-            get_int_value("^TC_ALLOWED=\\s*(\\d+)\\s*",            tc_state);
-            get_int_value("^TYRE_BLANKETS_ALLOWED=\\s*(\\d+)\\s*", tyre_blankets_allowed);
+        while (getline(ifs, line)) {
+            line = std::regex_replace(line, std::regex("\\r"), "");
+            if (std::regex_match(line, match, std::regex("^\\[(.+)\\]\\s*"))) {
+                section = match[1].str();
+            }
+            if (section == "SERVER") {
+                if (std::regex_match(line, match, std::regex("^NAME=(.*)"))) {
+                    ac_server_name = match[1].str();
+                    ofs << "NAME=" << ac_server_name << " ℹ" << to_string(ac_detail_port) << "\r\n";
+                    continue;
+                }
+
+                get_int_value("^HTTP_PORT=\\s*(\\d+)\\s*", ac_http_port);
+                get_int_value("^TYRE_WEAR_RATE=\\s*(\\d+)\\s*", tyre_wear);
+                get_int_value("^CLIENT_SEND_INTERVAL_HZ=\\s*(\\d+)\\s*", frequency);
+
+                get_int_value("^ABS_ALLOWED=\\s*(\\d+)\\s*",           abs_state);
+                get_int_value("^ALLOWED_TYRES_OUT=\\s*(\\d+)\\s*",     allowed_tyres_out);
+                get_int_value("^AUTOCLUTCH_ALLOWED=\\s*(\\d+)\\s*",    autoclutch_allowed);
+                get_int_value("^DAMAGE_MULTIPLIER=\\s*(\\d+)\\s*",     damage_multiplier);
+                get_int_value("^FORCE_VIRTUAL_MIRROR=\\s*(\\d+)\\s*",  force_virtual_mirror);
+                get_int_value("^FUEL_RATE=\\s*(\\d+)\\s*",             fuel_rate);
+                get_int_value("^STABILITY_ALLOWED=\\s*(\\d+)\\s*",     stability_allowed);
+                get_int_value("^TC_ALLOWED=\\s*(\\d+)\\s*",            tc_state);
+                get_int_value("^TYRE_BLANKETS_ALLOWED=\\s*(\\d+)\\s*", tyre_blankets_allowed);
+            }
+            if (section == "WEATHER_0") {
+                get_str_value("^GRAPHICS=\\s*(\\d+)\\s*",                 weather);
+                get_int_value("^BASE_TEMPERATURE_AMBIENT=\\s*(\\d+)\\s*", temp_ambient);
+                get_int_value("^BASE_TEMPERATURE_ROAD=\\s*(\\d+)\\s*",    temp_road);
+            }
+            if (section == "DYNAMIC_TRACK") {
+                get_int_value("^SESSION_START=\\s*(\\d+)\\s*", tyre_grip);
+            }
+            //ofs << line << endl;
+            ofs << line << "\r\n";
         }
-        if (section == "WEATHER_0") {
-            get_str_value("^GRAPHICS=\\s*(\\d+)\\s*",                 weather);
-            get_int_value("^BASE_TEMPERATURE_AMBIENT=\\s*(\\d+)\\s*", temp_ambient);
-            get_int_value("^BASE_TEMPERATURE_ROAD=\\s*(\\d+)\\s*",    temp_road);
-        }
-        if (section == "DYNAMIC_TRACK") {
-            get_int_value("^SESSION_START=\\s*(\\d+)\\s*", tyre_grip);
-        }
-        //ofs << line << endl;
-        ofs << line << "\r\n";
-    }
-    ofs.close();
-    ifs.close();
+
+        ofs.close();
+        ifs.close();
+    };
 
 #if 1
-    auto ac = [=]() {
+    auto ac = [&]() {
         using namespace boost::process;
-        ipstream pipe;
-        string line;
+
         string cmd = (boost::format("%s -c  %s -e %s") % ac_server_exe % ac_mod_server_cfg % ac_server_entry).str();
-        child acs(cmd, std_out > pipe);
-        while (getline(pipe, line)){
-            cout << line << "\n";
+
+        while (1) {
+            load_config();
+            ipstream pipe;
+            string line;
+            child acs(cmd, std_out > pipe);
+            acs_pid = acs.id();
+            cout << "acServer started" << "\n";
+            while (getline(pipe, line)){
+                if (line.length() > 0 && line[0] == '{')                continue;
+                if (line.length() > 5 && line.substr(0, 5) == "PAGE:")  continue;
+                if (line.length() > 6 && line.substr(0, 6) == "Serve ") continue;
+                if (line.length() > 3 && line.substr(0, 3) == "REQ")    continue;
+                cout << line << "\n";
+            }
+            acs.wait();
+            cout << "acServer stopped" << "\n";
+            std::this_thread::sleep_for(std::chrono::seconds(5)); 
         }
-        acs.wait();
-        cout << "acServer stopped" << "\n";
         httplib::Client cli("http://127.0.0.1:" + to_string(ac_detail_port));
         cli.Get("/stop");
     };
@@ -253,8 +270,25 @@ int main(int argc, char **argv)
 
         //cout << ac_http_port << "\n";
         httplib::Client cli("http://127.0.0.1:" + to_string(ac_http_port));
-        json info = json::parse(cli.Get("/INFO")->body);
-        json players = json::parse(cli.Get("/JSON\%7C")->body);
+        json info, players;
+        if (auto r = cli.Get("/INFO")) {
+            if (r->status == 200) {
+                 info = json::parse(r->body);
+            }
+        } else {
+            res.set_content("error", "text/plain");
+            res.status = 503;
+            return;
+        }
+        if (auto r = cli.Get("/JSON\%7C")) {
+            if (r->status == 200) {
+                 players = json::parse(r->body);
+            }
+        } else {
+            res.set_content("error", "text/plain");
+            res.status = 503;
+            return;
+        }
 
         json assists;
         assists["absState"]            = abs_state;                                 // ABS_ALLOWED
@@ -323,8 +357,19 @@ int main(int argc, char **argv)
 
     svr.Get("/stop", [&](const httplib::Request &req, httplib::Response &res) {
         if (req.remote_addr == "127.0.0.1") {
+            kill(acs_pid, SIGTERM);
+            res.set_content("ok", "text/html");
             cout << "acsup stopped" << endl;
             svr.stop();
+        } else {
+            res.set_content("error", "text/html");
+        }
+    });
+
+    svr.Get("/restart", [&](const httplib::Request &req, httplib::Response &res) {
+        if (req.remote_addr == "127.0.0.1") {
+            res.set_content("ok", "text/html");
+            kill(acs_pid, SIGTERM);
         } else {
             res.set_content("error", "text/html");
         }

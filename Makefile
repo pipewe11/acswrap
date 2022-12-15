@@ -13,6 +13,10 @@ upload:
 	scp acswrap indigo:~/assetto/acswrap/acswrap.temp
 
 .PHONY:
+upload-rc:
+	scp acswrap indigo:~/assetto/acswrap/acswrap.rc
+
+.PHONY:
 clean:
 	rm -f acswrap
 
