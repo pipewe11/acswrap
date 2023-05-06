@@ -243,7 +243,7 @@ int main(int argc, char **argv)
                 if (line.length() > 0 && line[0] == '{')                continue;
                 if (line.length() > 5 && line.substr(0, 5) == "PAGE:")  continue;
                 if (line.length() > 6 && line.substr(0, 6) == "Serve ") continue;
-                if (line.length() > 3 && line.substr(0, 3) == "REQ")    continue;
+                if (line == "REQ")                                      continue;
                 cout << line << "\n";
             }
             acs.wait();

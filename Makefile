@@ -9,12 +9,14 @@ acswrap: acswrap.cpp
 		-lpthread
 
 .PHONY:
-upload:
-	scp acswrap indigo:~/assetto/acswrap/acswrap.temp
+upload-temp:
+	scp acswrap oc:~/assetto/acswrap/acswrap.temp
+	scp acswrap oc2:~/assetto/acswrap/acswrap.temp
 
 .PHONY:
 upload-rc:
-	scp acswrap indigo:~/assetto/acswrap/acswrap.rc
+	scp acswrap oc:~/assetto/acswrap/acswrap.rc
+	scp acswrap oc2:~/assetto/acswrap/acswrap.rc
 
 .PHONY:
 clean:
